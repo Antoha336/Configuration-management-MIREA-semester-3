@@ -45,5 +45,33 @@ mv $filename /usr/local/bin
 ```
 ![image](https://github.com/user-attachments/assets/ab1c4cd3-84f4-4524-a243-2c54af8c59bd)
 
+## Задача №6
+```bash
+#!/bin/bash
 
-
+filename="$1"
+line=$(head -n 1 "$filename")
+.c
+if [[ $filename =~ \.(c)$ ]]; then
+  if [[ $line =~ ^(\/\/) ]]; then
+    echo "$filename has a comment"
+  else
+    echo "$filename doesn't have a comment"
+  fi
+elif [[ $filename =~ \.(js)$ ]]; then
+  if [[ $line =~ ^(\/\*) ]]; then
+    echo "$filename has a comment"
+  else
+    echo "$filename doesn't have a comment"
+  fi
+elif [[ $filename =~ \.(py)$ ]]; then
+  if [[ $line =~ ^(\#) ]]; then
+    echo "$filename has a comment"
+  else
+    echo "$filename doesn't have a comment"
+  fi
+else
+  echo "$filename doesn't have a comment"
+fi
+```
+![image](https://github.com/user-attachments/assets/0ec0fc71-35a7-43d6-823a-0d3a39f59027)
