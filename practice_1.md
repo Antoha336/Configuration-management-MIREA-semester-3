@@ -15,6 +15,7 @@ cat /etc/protocols | awk '{print $2, $1}' | sort -nr | head -n 5
 ## Задача №3
 ```bash
 #!/bin/bash
+
 message="$1"
 length=${#message}
 
@@ -33,7 +34,9 @@ echo "$border"
 ## Задача №4
 ```bash
 #!/bin/bash
+
 filename="$1"
+
 grep -o -w '\b[_a-zA-Z][_a-zA-Z0-9]*\b' "$filename" | sort | uniq
 ```
 ![image](https://github.com/user-attachments/assets/69359fa2-d4a2-46bf-98bb-fd1afe1b201d)
@@ -41,7 +44,9 @@ grep -o -w '\b[_a-zA-Z][_a-zA-Z0-9]*\b' "$filename" | sort | uniq
 ## Задача №5
 ```bash
 #!/bin/bash
+
 filename="$1"
+
 chmod +x $filename
 mv $filename /usr/local/bin
 ```
@@ -52,8 +57,8 @@ mv $filename /usr/local/bin
 #!/bin/bash
 
 filename="$1"
-line=$(head -n 1 "$filename")
-.c
+line=$(head -n 1 "$filename").c
+
 if [[ $filename =~ \.(c)$ ]]; then
   if [[ $line =~ ^(\/\/) ]]; then
     echo "$filename has a comment"
@@ -124,4 +129,3 @@ directory=$1
 find $directory -size 0
 ```
 ![image](https://github.com/user-attachments/assets/2d3c227d-6154-4278-a733-45f34a899eb8)
-
