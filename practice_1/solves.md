@@ -1,5 +1,8 @@
-Задания: https://github.com/true-grue/kisscm/blob/main/pract/pract1.md
+# Задания
+* [Первоисточник](https://github.com/true-grue/kisscm/blob/main/pract/pract1.md)
+* [Сохраненные локально](https://github.com/Antoha336/Configuration-management-MIREA-semester-3/blob/main/practice_1/tasks.md)
 
+# Решения
 ## Задача №1
 ```bash
 cat /etc/passwd | sort
