@@ -115,3 +115,13 @@ cat $input_file | sed "s/    /\t/g" > $output_file
 ```
 ![image](https://github.com/user-attachments/assets/d66d29e0-3efe-43b6-9db7-e9424cd67e21)
 
+## Задача №10
+```bash
+#!/bin/bash
+
+directory=$1
+
+find $directory -size 0
+```
+![image](https://github.com/user-attachments/assets/2d3c227d-6154-4278-a733-45f34a899eb8)
+
