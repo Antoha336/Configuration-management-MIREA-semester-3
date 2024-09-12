@@ -1,3 +1,5 @@
+Задания: https://github.com/true-grue/kisscm/blob/main/pract/pract1.md
+
 ## Задача №1
 ```bash
 cat /etc/passwd | sort
@@ -75,3 +77,14 @@ else
 fi
 ```
 ![image](https://github.com/user-attachments/assets/0ec0fc71-35a7-43d6-823a-0d3a39f59027)
+
+## Задача №7
+```bash
+#!/bin/bash
+
+directory="$1"
+
+hash=$(find "$directory" -type f -exec md5sum {} + | sort | uniq -w 32 -d | awk '{print $1}')
+find "$directory" -type f -exec md5sum {} + | grep "$hash" | awk '{print $2}'
+```
+![image](https://github.com/user-attachments/assets/09682c9a-6a33-4d28-a9f4-c9a36806b57a)
