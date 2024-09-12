@@ -103,3 +103,15 @@ rm -R ./temp
 ```
 ![image](https://github.com/user-attachments/assets/3cee82d6-0e67-459a-a96d-4df8f8d9f96f)
 
+## Задача №9
+```bash
+#!/bin/bash
+
+input_file=$1
+output_file=$2
+
+touch $output_file
+cat $input_file | sed "s/    /\t/g" > $output_file
+```
+![image](https://github.com/user-attachments/assets/d66d29e0-3efe-43b6-9db7-e9424cd67e21)
+
