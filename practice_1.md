@@ -88,3 +88,18 @@ hash=$(find "$directory" -type f -exec md5sum {} + | sort | uniq -w 32 -d | awk 
 find "$directory" -type f -exec md5sum {} + | grep "$hash" | awk '{print $2}'
 ```
 ![image](https://github.com/user-attachments/assets/09682c9a-6a33-4d28-a9f4-c9a36806b57a)
+
+## Задача №8
+```bash
+#!/bin/bash
+
+directory=$1
+ext=$2
+
+mkdir -p ./temp
+find "$directory" -type f -name "*.$ext" -exec cp {} ./temp +
+tar -cf "${ext}_files.tar" ./temp
+rm -R ./temp
+```
+![image](https://github.com/user-attachments/assets/3cee82d6-0e67-459a-a96d-4df8f8d9f96f)
+
