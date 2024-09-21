@@ -69,70 +69,82 @@ class ShellEmulator:
                 self.__cd(args)
             elif command == 'exit':
                 self.__exit()
+            elif command == 'wc':
+                self.__wc(args)
+            elif command == 'uniq':
+                self.__uniq(args)
             else:
                 self.__display_line('command not found\n')
         
         self.__display_prompt()
 
+    def __interpret_path(self,
+                         directory: str) -> str:
+        
+        if directory.startswith('/'):
+            search_directory = directory
+        elif directory == '..':
+            search_directory = Path(self.working_directory).parent.as_posix()
+        elif directory == '.' or directory == './':
+            search_directory = self.working_directory
+        elif directory.startswith('./') and self.working_directory + directory[2:] in self.file_system:
+            search_directory = self.working_directory + directory[2:]
+        else:
+            search_directory = self.working_directory + directory
+
+        return search_directory
+
+    def __set_working_directory(self, new_working_directory):
+        if new_working_directory in self.file_system:
+            self.working_directory = new_working_directory
+        else:
+            self.__display_line(f'{new_working_directory}: No such file or directory\n')
+
+    def __get_directory_content(self, 
+                                search_directory: str) -> str:
+        
+        if search_directory in self.file_system:
+            content = '    '.join(self.file_system[search_directory])
+        else:
+            content = f'cannot access "{search_directory}": No such file or directory'
+
+        return content
+
     def __ls(self, 
              directories: list[str]) -> None:
         
-        def get_content(search_directory) -> str:
-            if directory in self.file_system:
-                content = '    '.join(self.file_system[search_directory])
-            else:
-                content = f'cannot access "{search_directory}": No such file or directory'
-
-            return content
-        
-        if directories:
-            for directory in directories:
-                if directory.startswith('/'):
-                    search_directory = directory
-                elif directory == '.' or directory == './':
-                    search_directory = self.working_directory
-                elif directory.startswith('./') and self.working_directory + directory[2:] in self.file_system:
-                    search_directory = self.working_directory + directory[2:]
-                else:
-                    search_directory = self.working_directory + directory
-            
-                content = get_content(search_directory)
-                self.__display_line(f'{directory}:\n')
-                self.__display_line(content + '\n')
-        else:
-            content = '    '.join(self.file_system[self.working_directory])
+        contents = list()
+        for directory in directories:
+            search_directory = self.__interpret_path(directory)
+            contents.append(f'{directory}: {self.__get_directory_content(search_directory)}')
+        if not contents:
+            contents.append(f'{self.working_directory}: {self.__get_directory_content(self.working_directory)}')
+    
+        for content in contents:
             self.__display_line(content + '\n')
                     
     def __cd(self, 
              directories: list[str]) -> None:
-        
-        def set_working_directory(new_working_directory):
-            if new_working_directory in self.file_system:
-                self.working_directory = new_working_directory
-            else:
-                self.__display_line(f'{new_working_directory}: No such file or directory\n')
+
+        if len(directories) > 1:
+            self.__display_line('too many arguments')
+            return
 
         if len(directories) == 0:
             search_directory = '/'
-        elif len(directories) > 1:
-            self.__display_line('too many arguments')
         else:
-            directory = directories[0]
-            if directory.startswith('/'):
-                search_directory = directory
-            elif directory == '..':
-                search_directory = Path(self.working_directory).parent.as_posix()
-            elif directory == '.' or directory == './':
-                search_directory = self.working_directory
-            elif directory.startswith('./') and self.working_directory + directory[2:] in self.file_system:
-                search_directory = self.working_directory + directory[2:]
-            else:
-                search_directory = self.working_directory + directory
+            searched_directory = self.__interpret_path(directories[0])
 
-            set_working_directory(search_directory)
+        self.__set_working_directory(search_directory)
 
     def __exit(self):
         self.root.quit()
+
+    def __wc(self, args):
+        pass
+
+    def __uniq(self, args):
+        pass
 
     def run(self):
         self.root.mainloop()
