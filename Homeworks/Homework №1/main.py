@@ -14,7 +14,9 @@ class ShellEmulator:
         self.root = Tk()
         self.working_directory = Path('/')
         self.computer_name = computer_name
+        self.file_system_archive = file_system_archive
         self.file_system = {}
+        self.files = {}
 
         self.__load_virtual_file_system(file_system_archive)
         self.__init_display()
@@ -29,6 +31,8 @@ class ShellEmulator:
                     path = Path(member.path.replace(files[0].name + '/', '/'))
                     folder, file = path.parent, path.name
                     self.file_system.setdefault(folder, list()).append(file)
+                    if member.isfile():
+                        self.files[path] = member
         else:
             self.command_output.insert(END, 'Ошибка: Архив .tar не найден\n')
         
@@ -146,7 +150,25 @@ class ShellEmulator:
 
     def __wc(self, 
              files_pathes: list[str]):
-        pass
+        
+        contents = list()
+        summary = [0, 0, 0]
+        for file_path in files_pathes:
+            path = self.__interpret_path(file_path)
+            if path in self.files:
+                with tarfile.open(self.file_system_archive, 'r') as tar:
+                    file_obj = tar.extractfile(self.files[path]).read().decode()
+                lines, words, byte = len(file_obj.split('\n')), len(file_obj.split()), self.files[path].size
+                contents.append(f'{lines} {words} {byte} {path}')
+                summary[0] += lines
+                summary[1] += words
+                summary[2] += byte
+            else:
+                contents.append(f'{path}: No such file or directory')
+        
+        for content in contents:
+            self.__display_line(content + '\n')
+        self.__display_line(' '.join(list(map(str, summary))) + ' total\n')
         
     def __uniq(self, 
                files_pathes: list[str]):
