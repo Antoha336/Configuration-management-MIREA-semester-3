@@ -12,7 +12,7 @@ class ShellEmulator:
                  startup_script: str | None = None) -> None:
         
         self.root = Tk()
-        self.current_directory = '/'
+        self.working_directory = '/'
         self.computer_name = computer_name
         self.file_system = {}
 
@@ -53,7 +53,7 @@ class ShellEmulator:
         self.command_output.config(state='disabled')
 
     def __display_prompt(self) -> None:
-        self.__display_line(f'{self.computer_name}@vsh:{self.current_directory}$ ')
+        self.__display_line(f'{self.computer_name}@vsh:{self.working_directory}$ ')
 
     def __handle_command(self) -> None:
         command_line = self.command_input.get().strip()
@@ -74,9 +74,36 @@ class ShellEmulator:
         
         self.__display_prompt()
 
-    def __ls(self, args):
-        pass
+    def __ls(self, 
+             directories: list[str]):
+        
+        def get_content(directory):
+            if directory in self.file_system:
+                content = '    '.join(self.file_system[directory])
+            else:
+                content = f'cannot access "{directory}": No such file or directory'
 
+            return content
+        
+        if directories:
+            for directory in directories:
+                if directory.startswith('/'):
+                    search_directory = directory
+                elif directory == '.' or directory == './':
+                    search_directory = self.working_directory
+                elif directory.startswith('./') and self.working_directory + directory[2:] in self.file_system:
+                    search_directory = self.working_directory + directory[2:]
+                else:
+                    search_directory = self.working_directory + directory
+            
+                content = get_content(search_directory)
+                self.__display_line(f'{directory}:\n')
+                self.__display_line(content + '\n')
+        else:
+            content = '    '.join(self.file_system[self.working_directory])
+            self.__display_line(content + '\n')
+                    
+        
     def __cd(self, args):
         pass
 
