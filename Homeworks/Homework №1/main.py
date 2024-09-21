@@ -12,7 +12,7 @@ class ShellEmulator:
                  startup_script: str | None = None) -> None:
         
         self.root = Tk()
-        self.working_directory = '/'
+        self.working_directory = Path('/')
         self.computer_name = computer_name
         self.file_system = {}
 
@@ -27,7 +27,7 @@ class ShellEmulator:
                 files = tar.getmembers()
                 for member in files[1:]:
                     path = Path(member.path.replace(files[0].name + '/', '/'))
-                    folder, file = path.parent.as_posix(), path.name
+                    folder, file = path.parent, path.name
                     self.file_system.setdefault(folder, list()).append(file)
         else:
             self.command_output.insert(END, 'Ошибка: Архив .tar не найден\n')
@@ -53,7 +53,7 @@ class ShellEmulator:
         self.command_output.config(state='disabled')
 
     def __display_prompt(self) -> None:
-        self.__display_line(f'{self.computer_name}@vsh:{self.working_directory}$ ')
+        self.__display_line(f'{self.computer_name}@vsh:{self.working_directory.as_posix()}$ ')
 
     def __handle_command(self) -> None:
         command_line = self.command_input.get().strip()
@@ -79,34 +79,38 @@ class ShellEmulator:
         self.__display_prompt()
 
     def __interpret_path(self,
-                         directory: str) -> str:
+                         directory: str) -> Path:
         
         if directory.startswith('/'):
-            search_directory = directory
+            return self.__interpret_path()
         elif directory == '..':
-            search_directory = Path(self.working_directory).parent.as_posix()
+            search_directory = self.working_directory.parent
         elif directory == '.' or directory == './':
             search_directory = self.working_directory
-        elif directory.startswith('./') and self.working_directory + directory[2:] in self.file_system:
-            search_directory = self.working_directory + directory[2:]
+        elif directory.startswith('..'):
+            return self.__interpret_path((self.working_directory.parent / directory[2:]).as_posix())
+        elif directory.startswith('./'):
+            return self.__interpret_path((self.working_directory / directory[2:]).as_posix()) 
         else:
-            search_directory = self.working_directory + directory
+            search_directory = self.working_directory / directory
 
         return search_directory
 
-    def __set_working_directory(self, new_working_directory):
+    def __set_working_directory(self, 
+                                new_working_directory: Path) -> None:
+        
         if new_working_directory in self.file_system:
             self.working_directory = new_working_directory
         else:
-            self.__display_line(f'{new_working_directory}: No such file or directory\n')
+            self.__display_line(f'{new_working_directory.as_posix()}: No such file or directory\n')
 
     def __get_directory_content(self, 
-                                search_directory: str) -> str:
+                                search_directory: Path) -> str:
         
         if search_directory in self.file_system:
             content = '    '.join(self.file_system[search_directory])
         else:
-            content = f'cannot access "{search_directory}": No such file or directory'
+            content = f'cannot access "{search_directory.as_posix()}": No such file or directory'
 
         return content
 
@@ -118,7 +122,7 @@ class ShellEmulator:
             search_directory = self.__interpret_path(directory)
             contents.append(f'{directory}: {self.__get_directory_content(search_directory)}')
         if not contents:
-            contents.append(f'{self.working_directory}: {self.__get_directory_content(self.working_directory)}')
+            contents.append(f'{self.working_directory.as_posix()}: {self.__get_directory_content(self.working_directory)}')
     
         for content in contents:
             self.__display_line(content + '\n')
@@ -131,19 +135,21 @@ class ShellEmulator:
             return
 
         if len(directories) == 0:
-            search_directory = '/'
+            search_directory = Path('/')
         else:
-            searched_directory = self.__interpret_path(directories[0])
+            search_directory = self.__interpret_path(directories[0])
 
         self.__set_working_directory(search_directory)
 
-    def __exit(self):
+    def __exit(self) -> None:
         self.root.quit()
 
-    def __wc(self, args):
+    def __wc(self, 
+             file_pathes: list[str]):
         pass
-
-    def __uniq(self, args):
+        
+    def __uniq(self, 
+               file_pathes: list[str]):
         pass
 
     def run(self):
