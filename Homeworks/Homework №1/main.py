@@ -1,5 +1,7 @@
 import tarfile
 import sys
+
+from pathlib import Path
 from tkinter import Tk, WORD, END, Entry, Button
 from tkinter.scrolledtext import  ScrolledText
 
@@ -22,8 +24,11 @@ class ShellEmulator:
     
         if tarfile.is_tarfile(file_system_archive):
             with tarfile.open(file_system_archive, 'r') as tar:
-                for member in tar.getmembers():
-                    self.file_system[member.name] = member
+                files = tar.getmembers()
+                for member in files[1:]:
+                    path = Path(member.path.replace(files[0].name + '/', '/'))
+                    folder, file = path.parent.as_posix(), path.name
+                    self.file_system.setdefault(folder, list()).append(file)
         else:
             self.command_output.insert(END, 'Ошибка: Архив .tar не найден\n')
         
