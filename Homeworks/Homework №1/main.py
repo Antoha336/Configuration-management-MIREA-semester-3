@@ -75,13 +75,13 @@ class ShellEmulator:
         self.__display_prompt()
 
     def __ls(self, 
-             directories: list[str]):
+             directories: list[str]) -> None:
         
-        def get_content(directory):
+        def get_content(search_directory) -> str:
             if directory in self.file_system:
-                content = '    '.join(self.file_system[directory])
+                content = '    '.join(self.file_system[search_directory])
             else:
-                content = f'cannot access "{directory}": No such file or directory'
+                content = f'cannot access "{search_directory}": No such file or directory'
 
             return content
         
@@ -103,9 +103,33 @@ class ShellEmulator:
             content = '    '.join(self.file_system[self.working_directory])
             self.__display_line(content + '\n')
                     
+    def __cd(self, 
+             directories: list[str]) -> None:
         
-    def __cd(self, args):
-        pass
+        def set_working_directory(new_working_directory):
+            if new_working_directory in self.file_system:
+                self.working_directory = new_working_directory
+            else:
+                self.__display_line(f'{new_working_directory}: No such file or directory\n')
+
+        if len(directories) == 0:
+            search_directory = '/'
+        elif len(directories) > 1:
+            self.__display_line('too many arguments')
+        else:
+            directory = directories[0]
+            if directory.startswith('/'):
+                search_directory = directory
+            elif directory == '..':
+                search_directory = Path(self.working_directory).parent.as_posix()
+            elif directory == '.' or directory == './':
+                search_directory = self.working_directory
+            elif directory.startswith('./') and self.working_directory + directory[2:] in self.file_system:
+                search_directory = self.working_directory + directory[2:]
+            else:
+                search_directory = self.working_directory + directory
+
+            set_working_directory(search_directory)
 
     def __exit(self):
         self.root.quit()
