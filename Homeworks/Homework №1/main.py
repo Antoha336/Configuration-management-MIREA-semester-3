@@ -79,20 +79,20 @@ class ShellEmulator:
         self.__display_prompt()
 
     def __interpret_path(self,
-                         directory: str) -> Path:
+                         directory_path: str) -> Path:
         
-        if directory.startswith('/'):
-            return self.__interpret_path()
-        elif directory == '..':
+        if directory_path.startswith('/'):
+            search_directory = Path(directory_path)
+        elif directory_path == '..':
             search_directory = self.working_directory.parent
-        elif directory == '.' or directory == './':
+        elif directory_path == '.' or directory_path == './':
             search_directory = self.working_directory
-        elif directory.startswith('..'):
-            return self.__interpret_path((self.working_directory.parent / directory[2:]).as_posix())
-        elif directory.startswith('./'):
-            return self.__interpret_path((self.working_directory / directory[2:]).as_posix()) 
+        elif directory_path.startswith('..'):
+            return self.__interpret_path((self.working_directory.parent / directory_path[2:]).as_posix())
+        elif directory_path.startswith('./'):
+            return self.__interpret_path((self.working_directory / directory_path[2:]).as_posix()) 
         else:
-            search_directory = self.working_directory / directory
+            search_directory = self.working_directory / directory_path
 
         return search_directory
 
@@ -145,11 +145,11 @@ class ShellEmulator:
         self.root.quit()
 
     def __wc(self, 
-             file_pathes: list[str]):
+             files_pathes: list[str]):
         pass
         
     def __uniq(self, 
-               file_pathes: list[str]):
+               files_pathes: list[str]):
         pass
 
     def run(self):
