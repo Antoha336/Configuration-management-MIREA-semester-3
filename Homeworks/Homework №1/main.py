@@ -90,12 +90,12 @@ class ShellEmulator:
         
         if directory_path.startswith('/'):
             search_directory = Path(directory_path)
-        elif directory_path == '..':
+        elif directory_path == '..' or directory_path == '../':
             search_directory = self.working_directory.parent
         elif directory_path == '.' or directory_path == './':
             search_directory = self.working_directory
         elif directory_path.startswith('..'):
-            return self.__interpret_path((self.working_directory.parent / directory_path[2:]).as_posix())
+            return self.__interpret_path(self.working_directory.parent.as_posix() + directory_path[2:])
         elif directory_path.startswith('./'):
             return self.__interpret_path((self.working_directory / directory_path[2:]).as_posix()) 
         else:
