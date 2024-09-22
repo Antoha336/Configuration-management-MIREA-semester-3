@@ -1,0 +1,6 @@
+cd Documents
+ls
+ls Study
+wc temp.txt
+uniq /Documents/temp.txt
+cd ..
