@@ -1,6 +1,7 @@
 import tarfile
 import sys
 
+from os.path import isfile
 from pathlib import Path
 from tkinter import Tk, WORD, END, Entry, Button
 from tkinter.scrolledtext import  ScrolledText
@@ -20,6 +21,7 @@ class ShellEmulator:
 
         self.__load_virtual_file_system(file_system_archive)
         self.__init_display()
+        self.__execute_startup_script(startup_script)
 
     def __load_virtual_file_system(self,
                                    file_system_archive: str) -> None:
@@ -50,6 +52,20 @@ class ShellEmulator:
         self.submit_button.pack(padx=10, pady=5)
         
         self.__display_prompt()
+
+    def __execute_startup_script(self, 
+                                 start_script_path: str):
+        
+        if not isfile(start_script_path):
+            self.__display_line(f"start script {start_script_path} has not been found\n")
+            return
+
+        with open(start_script_path, 'r') as script_file:
+            for line in script_file:
+                command = line.strip()
+                self.__display_line(f"Выполнение команды из скрипта: ")
+                self.command_input.insert(0, command)
+                self.__handle_command()
 
     def __display_line(self,
                        line: str) -> None:
