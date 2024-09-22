@@ -39,7 +39,6 @@ class ShellEmulator:
                 if member.isfile():
                     self.files[path] = member
         
-        
     def __init_display(self) -> None:
         self.root.title(f'{self.computer_name}: Командная строка')
         self.command_output = ScrolledText(self.root, wrap=WORD, height=20, width=60)
@@ -63,7 +62,6 @@ class ShellEmulator:
         with open(start_script_path, 'r') as script_file:
             for line in script_file:
                 command = line.strip()
-                self.__display_line(f"Выполнение команды из скрипта: ")
                 self.command_input.insert(0, command)
                 self.__handle_command()
 
@@ -76,11 +74,9 @@ class ShellEmulator:
 
     def __display_prompt(self) -> None:
         self.__display_line(f'{self.computer_name}@vsh:{self.working_directory.as_posix()}$ ')
-
-    def __handle_command(self) -> None:
-        command_line = self.command_input.get().strip()
-        self.command_input.delete(0, END)
-        self.__display_line(command_line + '\n')
+    
+    def execute_command(self,
+                          command_line: str) -> None:
         
         if command_line:
             command_split = command_line.split()
@@ -100,6 +96,13 @@ class ShellEmulator:
                 self.__display_line('command not found\n')
         
         self.__display_prompt()
+
+    def __handle_command(self) -> None:
+        command_line = self.command_input.get().strip()
+        self.command_input.delete(0, END)
+
+        self.__display_line(command_line + '\n')
+        self.execute_command(command_line)
 
     def __interpret_path(self,
                          directory_path: str) -> Path:
@@ -192,7 +195,7 @@ class ShellEmulator:
                     summary[2] += byte
                 else:
                     contents.append(f'{path.as_posix()}: No such file or directory\n')
-            
+        
         for content in contents:
             self.__display_line(content + '\n')
         self.__display_line(' '.join(list(map(str, summary))) + ' total\n')
