@@ -23,18 +23,20 @@ class ShellEmulator:
 
     def __load_virtual_file_system(self,
                                    file_system_archive: str) -> None:
-    
-        if tarfile.is_tarfile(file_system_archive):
-            with tarfile.open(file_system_archive, 'r') as tar:
-                files = tar.getmembers()
-                for member in files[1:]:
-                    path = Path(member.path.replace(files[0].name + '/', '/'))
-                    folder, file = path.parent, path.name
-                    self.file_system.setdefault(folder, list()).append(file)
-                    if member.isfile():
-                        self.files[path] = member
-        else:
+
+        if not tarfile.is_tarfile(file_system_archive):
             self.command_output.insert(END, 'Ошибка: Архив .tar не найден\n')
+            return
+
+        with tarfile.open(file_system_archive, 'r') as tar:
+            files = tar.getmembers()
+            for member in files[1:]:
+                path = Path(member.path.replace(files[0].path + '/', '/'))
+                folder, file = path.parent, path.name
+                self.file_system.setdefault(folder, list()).append(file)
+                if member.isfile():
+                    self.files[path] = member
+        
         
     def __init_display(self) -> None:
         self.root.title(f'{self.computer_name}: Командная строка')
@@ -63,6 +65,7 @@ class ShellEmulator:
         command_line = self.command_input.get().strip()
         self.command_input.delete(0, END)
         self.__display_line(command_line + '\n')
+        
         if command_line:
             command_split = command_line.split()
             command, args = command_split[0], command_split[1:]
@@ -135,7 +138,7 @@ class ShellEmulator:
              directories: list[str]) -> None:
 
         if len(directories) > 1:
-            self.__display_line('too many arguments')
+            self.__display_line('too many arguments\n')
             return
 
         if len(directories) == 0:
@@ -149,37 +152,68 @@ class ShellEmulator:
         self.root.quit()
 
     def __wc(self, 
-             files_pathes: list[str]):
+             files_pathes: list[str]) -> None:
         
+        if not files_pathes:
+            self.__display_line('Usage: wc [FILE]...\n')
+            return
+
         contents = list()
         summary = [0, 0, 0]
-        for file_path in files_pathes:
-            path = self.__interpret_path(file_path)
-            if path in self.files:
-                with tarfile.open(self.file_system_archive, 'r') as tar:
-                    file_obj = tar.extractfile(self.files[path]).read().decode()
-                lines, words, byte = len(file_obj.split('\n')), len(file_obj.split()), self.files[path].size
-                contents.append(f'{lines} {words} {byte} {path}')
-                summary[0] += lines
-                summary[1] += words
-                summary[2] += byte
-            else:
-                contents.append(f'{path}: No such file or directory')
-        
+
+        with tarfile.open(self.file_system_archive, 'r') as tar:
+            for file_path in files_pathes:
+                path = self.__interpret_path(file_path)
+
+                if path in self.files:
+                    file_info = self.files[path]
+                    file_text = tar.extractfile(file_info).read().decode()
+                    lines, words, byte = len(file_text.split('\n')), len(file_text.split()), self.files[path].size
+
+                    contents.append(f'{lines} {words} {byte} {path.as_posix()}')
+                    summary[0] += lines
+                    summary[1] += words
+                    summary[2] += byte
+                else:
+                    contents.append(f'{path.as_posix()}: No such file or directory\n')
+            
         for content in contents:
             self.__display_line(content + '\n')
         self.__display_line(' '.join(list(map(str, summary))) + ' total\n')
         
     def __uniq(self, 
-               files_pathes: list[str]):
-        pass
+               file_path: list[str]):
+        
+        if not file_path:
+            self.__display_line('Usage: uniq [FILE]')
+            return
+        elif len(file_path) > 1:
+            self.__display_line('too many arguments\n')
+            return
+        
+        path = self.__interpret_path(file_path[0])
+        if path in self.files:
+            with tarfile.open(self.file_system_archive, 'r') as tar:
+                file_text = tar.extractfile(self.files[path]).read().decode()
+            
+            file_lines = file_text.splitlines()
+            new_lines = list()
+            for index, line in enumerate(file_lines):
+                if index == 0 or line != file_lines[index - 1]:
+                    new_lines.append(line)
+
+            for line in new_lines:
+                self.__display_line(line + '\n')
+        else:
+            self.__display_line(f'{path.as_posix()}: No such file or directory\n')
+
 
     def run(self):
         self.root.mainloop()
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
-        print('Использование: python main.py <имя компьютера> <архив файловой системы> <стартовый скрипт>')
+        print('Usage: python main.py <pc_name> <file_system_acrhive_path> <start_script>')
         sys.exit(1)
 
     computer_name, fs_archive, startup_script = sys.argv[1], sys.argv[2], sys.argv[3]
