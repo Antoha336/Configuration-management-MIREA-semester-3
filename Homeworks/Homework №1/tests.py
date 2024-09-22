@@ -6,29 +6,28 @@ class TestShellEmulator(unittest.TestCase):
     def setUp(self):
         self.shell = ShellEmulator('TestPC', 'Homeworks\Homework №1\system.tar', '123')
 
-    def test_ls_root(self):
+    def get_command_output(self, command: str) -> str:
         start_line_index = self.shell.command_output.index("insert linestart")
-        self.shell.execute_command('ls')
-        output = self.shell.command_output.get(start_line_index, "end-2c")
+        self.shell.execute_command(command)
+
+        return self.shell.command_output.get(start_line_index, "end-2c")
+
+    def test_ls_root(self):
+        output = self.get_command_output('ls')
         self.assertIn('Documents', output)
         self.assertIn('Downloads', output)
 
     def test_ls_documents(self):
-        start_line_index = self.shell.command_output.index("insert linestart")
-        self.shell.execute_command('ls Documents')
-        output = self.shell.command_output.get(start_line_index, "end-2c")
+        output = self.get_command_output('ls Documents')
         self.assertIn('temp.txt', output)
         self.assertIn('пароли.txt', output)
         self.assertIn('Study', output)
 
     def test_ls_nonexistent_directory(self):
-        start_line_index = self.shell.command_output.index("insert linestart")
-        self.shell.execute_command('ls non_existent_dir')
-        output = self.shell.command_output.get(start_line_index, "end-2c")
+        output = self.get_command_output('ls non_existent_dir')
         self.assertIn('No such file or directory', output)
 
     def test_cd_documents(self):
-        start_line_index = self.shell.command_output.index("insert linestart")
         self.shell.execute_command('cd Documents')
         self.assertEqual(self.shell.working_directory.as_posix(), '/Documents')
 
@@ -38,45 +37,31 @@ class TestShellEmulator(unittest.TestCase):
         self.assertEqual(self.shell.working_directory.as_posix(), '/Documents')
 
     def test_cd_nonexistent_directory(self):
-        start_line_index = self.shell.command_output.index("insert linestart")
-        self.shell.execute_command('cd non_existent_dir')
-        output = self.shell.command_output.get(start_line_index, "end-2c")
+        output = self.get_command_output('cd non_existent_dir')
         self.assertIn('No such file or directory', output)
             
     def test_wc_file(self):
-        start_line_index = self.shell.command_output.index("insert linestart")
-        self.shell.execute_command('wc Documents/Study/1.txt')
-        output = self.shell.command_output.get(start_line_index, "end-2c")
-        self.assertIn('1.txt', output)
+        output = self.get_command_output('wc Documents/temp.txt')
+        self.assertIn('7 21 161 /Documents/temp.txt\n7 21 161 total', output)
     
     def test_wc_nonexistent_file(self):
-        start_line_index = self.shell.command_output.index("insert linestart")
-        self.shell.execute_command('wc non_existent_file.txt')
-        output = self.shell.command_output.get(start_line_index, "end-2c")
+        output = self.get_command_output('wc non_existent_file.txt')
         self.assertIn('No such file or directory', output)
 
     def test_wc_empty_file(self):
-        start_line_index = self.shell.command_output.index("insert linestart")
-        self.shell.execute_command('wc Documents/empty.txt')
-        output = self.shell.command_output.get(start_line_index, "end-2c")
-        self.assertIn('0 0 0', output)
+        output = self.get_command_output('wc /Documents/Study/1.txt')
+        self.assertIn('1 0 0 /Documents/Study/1.txt\n1 0 0 total', output)
 
     def test_uniq_file(self):
-        start_line_index = self.shell.command_output.index("insert linestart")
-        self.shell.execute_command('uniq Documents/temp.txt')
-        output = self.shell.command_output.get(start_line_index, "end-2c")
+        output = self.get_command_output('uniq Documents/temp.txt')
         self.assertIn('Debug|x64 = Debug|x64\nDebug|x86 = Debug|x86\nRelease|x64 = Release|x64\nDebug|x64 = Debug|x64', output)
 
     def test_uniq_nonexistent_file(self):
-        start_line_index = self.shell.command_output.index("insert linestart")
-        self.shell.execute_command('uniq non_existent_file.txt')
-        output = self.shell.command_output.get(start_line_index, "end-2c")
+        output = self.get_command_output('uniq non_existent_file.txt')
         self.assertIn('No such file or directory', output)
 
     def test_uniq_file_no_duplicates(self):
-        start_line_index = self.shell.command_output.index("insert linestart")
-        self.shell.execute_command('uniq Documents/пароли.txt')
-        output = self.shell.command_output.get(start_line_index, "end-2c")
+        output = self.get_command_output('uniq Documents/пароли.txt')
         self.assertIn('root: root\nanonymous: anonymous\nantes: 112', output)
 
 if __name__ == '__main__':
