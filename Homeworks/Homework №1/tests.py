@@ -1,5 +1,4 @@
 import unittest
-from io import StringIO
 from main import ShellEmulator
 from pathlib import Path
 

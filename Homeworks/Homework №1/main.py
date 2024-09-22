@@ -76,8 +76,9 @@ class ShellEmulator:
         self.__display_line(f'{self.computer_name}@vsh:{self.working_directory.as_posix()}$ ')
     
     def execute_command(self,
-                          command_line: str) -> None:
+                        command_line: str) -> None:
         
+        self.__display_line(command_line + '\n')
         if command_line:
             command_split = command_line.split()
             command, args = command_split[0], command_split[1:]
@@ -101,7 +102,6 @@ class ShellEmulator:
         command_line = self.command_input.get().strip()
         self.command_input.delete(0, END)
 
-        self.__display_line(command_line + '\n')
         self.execute_command(command_line)
 
     def __interpret_path(self,
