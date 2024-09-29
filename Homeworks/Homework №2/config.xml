@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+    <GraphvizPath>D:\Software\Graphviz\bin\dot.exe</GraphvizPath>
+    <PackagePath>./tests/microsoft.extensions.dependencyinjection.9.0.0-rc.1.24431.7.nupkg</PackagePath>
+    <MaxDepth>3</MaxDepth>
+</Configuration>
