@@ -28,8 +28,8 @@ class DependencyDrawer:
         tree = ElementTree.parse(os.path.join('extracted_package', nuspec_file))
         root = tree.getroot()
 
-        package_id = root.findtext("nuspec:metadata/nuspec:id", self.ns)
-        package_version = root.findtext("nuspec:metadata/nuspec:version", self.ns)
+        package_id = root.find("nuspec:metadata/nuspec:id", self.ns).text
+        package_version = root.find("nuspec:metadata/nuspec:version", self.ns).text
         dependencies = []
         for group in root.findall(".//nuspec:group", self.ns):
             for dependency in group.findall("nuspec:dependency", self.ns):
