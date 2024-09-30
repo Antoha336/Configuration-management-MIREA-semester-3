@@ -12,13 +12,21 @@ class DependencyDrawer:
         
         self.config_paht = config_file_path
         self.ns = {'nuspec': 'http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd'}
-        self.graphviz_path, self.package_path = self.__load_config()
+        self.__load_config()
 
     def __load_config(self) -> tuple[str, str]:
         tree = ElementTree.parse(self.config_paht)
         root = tree.getroot()
 
-        return root.find('GraphvizPath').text, root.find('PackagePath').text
+        graphviz_path = root.find('GraphvizPath').text
+        if not os.path.isfile(graphviz_path):
+            graphviz_path = 'dot'
+        self.graphviz_path = graphviz_path
+
+        package_path = root.find('PackagePath').text
+        if not os.path.isfile(package_path):
+            raise Exception("Package file not found")
+        self.package_path = package_path
 
     def __analyze(self) -> tuple[str, str, list[tuple[str, str]]]:
         with ZipFile(self.package_path, 'r') as zip_ref:
@@ -53,11 +61,11 @@ class DependencyDrawer:
             dot_graph += f'    "{package_name}" -> "{dep_name}";\n'
         dot_graph += '}\n'
         
-        with open(f'{package_name}.dot', 'w') as f:
+        with open(f'dependencies.dot', 'w') as f:
             f.write(dot_graph)
         
-        subprocess.run([self.graphviz_path, '-Tpng', f'{package_name}.dot', '-o', f'{package_name}.png'])
-    
+        subprocess.run([self.graphviz_path, '-Tpng', 'dependencies.dot', '-o', f'dependencies.png'])
+
     def run(self) -> None:
         package_name, package_version, dependencies = self.__analyze()
         self.__render(package_name, package_version, dependencies)
