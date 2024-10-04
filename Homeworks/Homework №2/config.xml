@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Configuration>
     <GraphvizPath>dot</GraphvizPath>
-    <PackagePath>./test_data/microsoft.extensions.dependencyinjection.9.0.0-rc.1.24431.7.nupkg</PackagePath>
+    <PackagePath>https://www.nuget.org/packages/Newtonsoft.Json</PackagePath>
 </Configuration>
