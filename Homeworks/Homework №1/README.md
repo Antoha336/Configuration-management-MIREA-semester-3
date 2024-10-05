@@ -7,7 +7,6 @@ python main.py <pc name> <system archive path> <startup script path>
 ```bash
 python main.py python main.py antes system.tar startup.txt
 ```
-Или можно использовать run.bat в случае запуска на Windows
 # Функционал
 ## Команды
 * Команда ls [dir path]...: Отображение содержимого текущего каталога.
