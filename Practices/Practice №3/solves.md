@@ -5,29 +5,19 @@
 # Решения
 ## Задача №1
 ```json
+local create_student(name, group, age) = {
+  age: age,
+  group: group,
+  name: name,
+};
+
 {
   groups: ["ИКБО-%d-20" % i for i in std.range(1, 24)],
-    "students": [
-    {
-      "age": 19,
-      "group": "ИКБО-4-20",
-      "name": "Иванов И.И."
-    },
-    {
-      "age": 18,
-      "group": "ИКБО-5-20",
-      "name": "Петров П.П."
-    },
-    {
-      "age": 18,
-      "group": "ИКБО-5-20",
-      "name": "Сидоров С.С."
-    },
-    {
-      "age": 19,
-      "group": "ИКБО-10-23",
-      "name": "Маркаданов А.А."
-    }
+  "students": [
+    create_student("Иванов И.И.", "ИКБО-4-20", 19),
+    create_student("Петров П.П.", "ИКБО-5-20", 18),
+    create_student("Сидоров С.С.", "ИКБО-5-20", 18),
+    create_student("Маркаданов А.А.", "ИКБО-10-23", 19),
   ],
   "subject": "Конфигурационное управление"
 }
