@@ -1,6 +1,6 @@
 # Задания
 * [Первоисточник](https://github.com/true-grue/kisscm/blob/main/pract/pract1.md)
-* [Сохраненные локально](https://github.com/Antoha336/Configuration-management-MIREA-semester-3/blob/main/practice_1/tasks.md)
+* [Сохраненные локально](https://github.com/Antoha336/Configuration-management-MIREA-semester-3/blob/main/Practices/Practice%20%E2%84%961/tasks.md)
 
 # Решения
 ## Задача №1
