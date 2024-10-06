@@ -5,7 +5,7 @@ with open('civgraph.json', 'r') as file:
 
 makefile = open('Makefile', 'w')
 
-makefile.write('.PHONY: clean\n\n')
+makefile.write('.PHONY = clean\n\n')
 
 for key in packages:
     dependencies = packages[key]
