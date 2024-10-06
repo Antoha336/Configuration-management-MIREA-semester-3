@@ -45,3 +45,28 @@ makefile.close()
 ```
 ![image](https://github.com/user-attachments/assets/c39d84e4-7c38-42d4-8976-bfa7af1e4899)
 ![image](https://github.com/user-attachments/assets/64f12675-3a16-4706-bd50-becbcc3c20d9)
+
+## Задача №3
+```python
+import json
+
+with open('civgraph.json', 'r') as file:
+    packages = json.loads(file.read())
+
+makefile = open('Makefile', 'w')
+
+makefile.write('.PHONY: clean\n\n')
+
+for key in packages:
+    dependencies = packages[key]
+    makefile.write(f'{key}: {key}.done\n\n')
+    makefile.write(f'{key}.done: {" ".join([f"{package}.done" for package in dependencies])}\n')
+    makefile.write(f'\t@echo {key}\n')
+    makefile.write(f'\t@type nul > {key}.done\n\n')
+
+makefile.write('clean:\n')
+makefile.write('\t@del /F *.done\n')
+
+makefile.close()
+```
+![image](https://github.com/user-attachments/assets/63b4974a-6456-4c4c-b36d-acad79762254)
