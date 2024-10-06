@@ -4,7 +4,7 @@
 
 # Решения
 ## Задача №1
-```json
+```jsonet
 local create_student(name, group, age) = {
   age: age,
   group: group,
@@ -95,6 +95,6 @@ E = () | {} | ( E ) | { E } | E E
 Язык выражений алгебры логики.
 ```python
 BNF = '''
-E = E & E | E OR E | ~ E | ( E ) | x | y
+E = E AND E | E OR E | ~ E | ( E ) | x | y
 '''
 ```
