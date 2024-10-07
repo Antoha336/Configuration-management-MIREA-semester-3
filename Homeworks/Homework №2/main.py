@@ -13,6 +13,7 @@ class DependencyDrawer:
         self.ns = {'nuspec': 'http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd'}
         self.graphviz_path = None
         self.package_url = None
+        self.max_depth = None
         self.__load_config(config_file_path)
 
     def __load_config(self, config_file_path: str) -> tuple[str, str]:
@@ -30,8 +31,12 @@ class DependencyDrawer:
         package_url = root.find('PackagePath').text
         self.package_url = package_url
 
-    def __parse(self) -> dict[str: tuple[str, str]]:
-        response = requests.get(self.package_url + '#dependencies-body-tab')
+        max_depth = root.find('MaxDepth').text
+        self.max_depth = int(max_depth)
+
+    def __parse(self, package_url: str, depth: int = 1) -> dict[str: tuple[str, str]]:
+        response = requests.get(package_url + '#dependencies-body-tab')
+        print(package_url)
         if response.status_code != 200:
             raise Exception('HTML page parse error')
         
@@ -39,19 +44,28 @@ class DependencyDrawer:
         soup = BeautifulSoup(html_content, 'html.parser')
         package_name = soup.find('span', {'class': 'title'}).text.strip()
         package_version = soup.find('span', {'class': 'version-title'}).text.strip()
-        dependencies_div = soup.find('ul', {'id': 'dependency-groups'})
-
         dependencies = dict()
+
+        dependencies_div = soup.find('ul', {'id': 'dependency-groups'})
+        if not dependencies_div:
+            return package_name, package_version, dependencies
+        
         dependencies_rows = dependencies_div.findAll('li', recursive=False)
-        for dependency_row in dependencies_rows:
-            dependencies_group = dependency_row.find('h4').find('span').text.strip()
-            dependencies_list = dependency_row.find('ul', recursive=False).findAll('li', recursive=False)
-            for dependency in dependencies_list:
-                dependency_name = dependency.find('a')
-                if dependency_name:
-                    dependency_name = dependency_name.text.strip()
-                    dependency_version = dependency.find('span').text.strip()
-                    dependencies.setdefault(dependencies_group, set()).add((dependency_name, dependency_version))
+        if dependencies_rows:
+            for dependency_row in dependencies_rows:
+                dependencies_group = dependency_row.find('h4').find('span').text.strip()
+                dependencies_list = dependency_row.find('ul', recursive=False).findAll('li', recursive=False)
+                for dependency in dependencies_list:
+                    dependency_name = dependency.find('a')
+                    if dependency_name:
+                        dependency_link = dependency_name.get('href')
+                        if dependency_link and depth + 1 <= self.max_depth:
+                            dependency_dependencies = self.__parse('https://www.nuget.org' + dependency_link, depth + 1)[2]
+                            dependencies.update(dependency_dependencies)
+                        dependency_name = dependency_name.text.strip()
+                        dependency_version = dependency.find('span').text.strip()
+                        dependencies.setdefault(dependencies_group, set()).add((dependency_name, dependency_version))
+                        
 
         return package_name, package_version, dependencies
     
@@ -76,7 +90,7 @@ class DependencyDrawer:
         subprocess.run([self.graphviz_path, '-Tpng', 'dependencies.dot', '-o', f'dependencies.png'])
 
     def run(self) -> None:
-        package_name, package_version, dependencies = self.__parse()
+        package_name, package_version, dependencies = self.__parse(self.package_url)
         self.__render(package_name, package_version, dependencies)
         print("Drawed successfully!")
 

@@ -2,4 +2,5 @@
 <Configuration>
     <GraphvizPath>dot</GraphvizPath>
     <PackagePath>https://www.nuget.org/packages/Newtonsoft.Json</PackagePath>
+    <MaxDepth>1</MaxDepth>
 </Configuration>

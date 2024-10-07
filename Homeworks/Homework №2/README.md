@@ -7,6 +7,7 @@
 <Configuration>
     <GraphvizPath>путь до утилиты dot (или просто dot, если прописано в PATH)</GraphvizPath>
     <PackagePath>ссылка на пакет на сайте www.nuget.org</PackagePath>
+    <MaxDepth>максимальная глубина поиска</PackagePath>
 </Configuration>
 ```
 ## Запуск
