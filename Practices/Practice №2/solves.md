@@ -98,9 +98,13 @@ solve minimize digit_1 + digit_2 + digit_3;
 
 output [show(digit_1),show(digit_2),show(digit_3),show(digit_4),show(digit_5),show(digit_6)];
 ```
+### Результата
+![image](https://github.com/user-attachments/assets/07faafae-45fd-4d91-9016-8212ae6c0934)
+
 ### Ответ: 620431
 
 ## Задача №5
+### Код для MiniZinc
 ```minizinc
 array [1..2] of var 0..1: icons;
 array [1..6] of var 0..1: menu;
@@ -156,3 +160,11 @@ output [
 "dropdown version: ", show(dropdown_version)
 ];
 ```
+### Результат
+![image](https://github.com/user-attachments/assets/40035a4f-839e-4467-a059-e7d57d6e566b)
+
+Цифры это индексы (начиная с 1) в таблицах версий на картинке
+### Ответ
+* menu: 1.0.0
+* icons: 1.0.0
+* dropdown: 1.8.0
