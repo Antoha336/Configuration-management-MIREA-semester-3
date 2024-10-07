@@ -5,6 +5,7 @@
 # Решения
 ## Тестирование make
 Был создан Makefile и вызвана команда make.
+
 ![image](https://github.com/user-attachments/assets/234f7536-594e-4f5d-a38f-45052444e2ce)
 ## Визуализация файоа civgraph.txt
 ![image](https://github.com/user-attachments/assets/4a479121-8b78-445d-8438-c940d50a5d32)
@@ -98,4 +99,5 @@ all: compile archive clean
 ![image](https://github.com/user-attachments/assets/d381311f-d684-4bb4-a50e-4940f3d7bfc8)
 ### Запуск с запуском других задач
 ![image](https://github.com/user-attachments/assets/b4273e37-e179-4d07-8138-a2d709afe0ac)
+
 На выполнении задачи all видно, что при запуске других задач уже выполненные работы не исполняются.
