@@ -163,7 +163,9 @@ output [
 ### Результат
 ![image](https://github.com/user-attachments/assets/40035a4f-839e-4467-a059-e7d57d6e566b)
 
-Цифры это индексы (начиная с 1) в таблицах версий на картинке
+Цифры это индексы (начиная с 1) в таблицах версий на картинке:
+
+![image](https://github.com/user-attachments/assets/922e221b-ba11-4f66-95ed-c8f4278981cb)
 ### Ответ
 * menu: 1.0.0
 * icons: 1.0.0
