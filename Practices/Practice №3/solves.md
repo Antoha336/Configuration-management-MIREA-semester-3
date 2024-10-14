@@ -22,6 +22,8 @@ local create_student(name, group, age) = {
   "subject": "Конфигурационное управление"
 }
 ```
+![image](https://github.com/user-attachments/assets/d3fe0b35-29e7-4bc0-a663-4e4a264fa95c)
+
 
 ## Задача №2
 ```haskell
@@ -41,7 +43,7 @@ let groups : List Group = [
 	create_group 2,
 	create_group 3,
 	create_group 4,
-  create_group 5,
+        create_group 5,
 	create_group 6,
 	create_group 7,
 	create_group 8,
@@ -74,6 +76,8 @@ let subject = "Конфигурационное управление"
 
 in { groups = groups, students = students, subject = subject }
 ```
+![image](https://github.com/user-attachments/assets/1b844449-9567-4a1c-b3ba-92ece79a7954)
+
 
 ## Задача №3
 Язык нулей и единиц.
@@ -82,6 +86,8 @@ BNF = '''
 E = 0 | 1 E | 1
 '''
 ```
+![image](https://github.com/user-attachments/assets/59e8b723-1887-4ac1-9f81-ec631c13289b)
+
 
 ## Задача №4
 Язык правильно расставленных скобок двух видов.
@@ -90,6 +96,8 @@ BNF = '''
 E = () | {} | ( E ) | { E } | E E
 '''
 ```
+![image](https://github.com/user-attachments/assets/33f98db2-8ca0-40fd-ab67-2d5f801d2ede)
+
 
 ## Задача №5
 Язык выражений алгебры логики.
@@ -98,3 +106,4 @@ BNF = '''
 E = E AND E | E OR E | ~ E | ( E ) | x | y
 '''
 ```
+![image](https://github.com/user-attachments/assets/3bacf55b-f6dc-4e40-b33a-e3a2904c1f49)
