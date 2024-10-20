@@ -1,6 +1,7 @@
 # Механизм работы
 Скрипт парсит входной текст на yaml и преобразует его в специальный конфигурационный язык.
-# Установка
+# Использование
+## Установка
 1. Клонирование гит репозитория
 ```bash
 git clone https://github.com/Antoha336/Configuration-management-MIREA-semester-3.git
@@ -15,8 +16,7 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 ```
-# Использование
-### В общем виде на windows
+## Запуск
 ```bash
 <команда, дающая поток вывода> | python main.py 
 ```
