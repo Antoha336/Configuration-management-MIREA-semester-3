@@ -36,7 +36,6 @@ class DependencyDrawer:
 
     def __parse(self, package_url: str, depth: int = 1) -> dict[str: tuple[str, str]]:
         response = requests.get(package_url + '#dependencies-body-tab')
-        print(package_url)
         if response.status_code != 200:
             raise Exception('HTML page parse error')
         
