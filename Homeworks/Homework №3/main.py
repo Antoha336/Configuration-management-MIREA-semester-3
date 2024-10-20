@@ -8,6 +8,10 @@ class SyntaxError(Exception):
 class YamlParser:
     def __convert_value(self, value: str | int | list | dict, tabs: int = 0) -> str | int | list | dict:
         if isinstance(value, str) or isinstance(value, bool):
+            variable = re.search(r'{{\s*(.*?)\s*}}', value)
+            if variable:
+                value = value.replace(variable.group(0), f'#({variable.group(1)})')
+
             return f'@"{value}"'
         elif isinstance(value, int) or isinstance(value, float):
             return str(value)
