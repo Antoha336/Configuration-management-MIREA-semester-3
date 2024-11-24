@@ -36,7 +36,7 @@ class Assembler:
         byte4 = (command_bits >> 8) & 0xFF
         byte5 = command_bits & 0xFF
 
-        byte_array = bytearray([byte5, byte4, byte3, byte2, byte1])
+        byte_array = bytearray([5, byte5, byte4, byte3, byte2, byte1])
 
         return byte_array
 
@@ -56,7 +56,7 @@ class Assembler:
         byte1 = (command_bits >> 8) & 0xFF
         byte2 = command_bits & 0xFF
 
-        byte_array = bytearray([byte2, byte1])
+        byte_array = bytearray([2, byte2, byte1])
 
         return byte_array
 
@@ -80,7 +80,7 @@ class Assembler:
         byte3 = (command_bits >> 8) & 0xFF
         byte4 = command_bits & 0xFF
 
-        byte_array = bytearray([byte4, byte3, byte2, byte1])
+        byte_array = bytearray([4, byte4, byte3, byte2, byte1])
 
         return byte_array
 
@@ -102,38 +102,42 @@ class Assembler:
         byte3 = (command_bits >> 8) & 0xFF
         byte4 = command_bits & 0xFF
 
-        byte_array = bytearray([byte4, byte3, byte2, byte1])
+        byte_array = bytearray([4, byte4, byte3, byte2, byte1])
 
         return byte_array
     
 
-    def __parse_instruction(self, line: str) -> tuple[str, bytearray]:
+    def __parse_instruction(self, line: str) -> tuple[str, tuple[int, ...], bytearray]:
         parts = line.split()
         command = parts.pop(0)
         parts = list(map(int, parts))
         match(command):
             case 'LOAD_CONST':
                 a, b, c = self.__get_command(command), parts[0], parts[1]
+                args = a, b, c
                 result = self.load_const(a, b, c)
             case 'READ_MEM':
                 a, b, c = self.__get_command(command), parts[0], parts[1]
+                args = a, b, c
                 result = self.read_memory(a, b, c)
             case 'WRITE_MEM':
                 a, b, c, d = self.__get_command(command), parts[0], parts[1], parts[2]
+                args = a, b, c, d
                 result = self.write_memory(a, b, c, d)
             case 'ADD':
                 a, b, c = self.__get_command(command), parts[0], parts[1]
+                args = a, b, c
                 result = self.add(a, b, c)
             case '_':
                 raise Exception(f'Unknown command: {command}')
         
-        return command, result
+        return (command, args, result)
 
 
-    def __log_instructions(self, log_file: str, instructions: list[tuple[str, bytearray]]) -> None:
+    def __log_instructions(self, log_file: str, instructions: list[tuple[str, tuple[int, ...], bytearray]]) -> None:
         root = ET.Element("log")
         for i, instruction in enumerate(instructions):
-            ET.SubElement(root, "instruction", id=str(i), tag=instruction[0]).text = instruction[1].hex()
+            ET.SubElement(root, "instruction", id=str(i), tag=instruction[0]).text = f'{" ".join(f"{chr(65 + i)}={val}" for i, val in enumerate(instruction[1]))} {instruction[2].hex(",")}'
 
         rough_string = ET.tostring(root, encoding='utf-8')
         parsed = minidom.parseString(rough_string)
@@ -152,12 +156,11 @@ class Assembler:
                 if not parts:
                     continue
 
-                command, result = self.__parse_instruction(line)
-                instructions.append((command, result))
+                instructions.append(self.__parse_instruction(line))
         
         with open(output_file, 'wb') as file:
             for instruction in instructions:
-                file.write(instruction[1])
+                file.write(instruction[2])
         
         self.__log_instructions(
             log_file=log_file,
