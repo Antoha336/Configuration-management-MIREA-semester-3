@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<log>
+    <instruction id="0" tag="LOAD_CONST">A=5 B=1 C=0 05,15,00,00,00,00</instruction>
+    <instruction id="1" tag="LOAD_CONST">A=5 B=2 C=1 05,25,00,00,00,02</instruction>
+    <instruction id="2" tag="LOAD_CONST">A=5 B=3 C=2 05,35,00,00,00,04</instruction>
+    <instruction id="3" tag="LOAD_CONST">A=5 B=4 C=3 05,45,00,00,00,06</instruction>
+    <instruction id="4" tag="LOAD_CONST">A=5 B=5 C=4 05,55,00,00,00,08</instruction>
+    <instruction id="5" tag="WRITE_MEM">A=9 B=6 C=4 D=0 04,69,08,00,00</instruction>
+    <instruction id="6" tag="WRITE_MEM">A=9 B=6 C=3 D=1 04,69,46,00,00</instruction>
+    <instruction id="7" tag="WRITE_MEM">A=9 B=6 C=2 D=2 04,69,84,00,00</instruction>
+    <instruction id="8" tag="WRITE_MEM">A=9 B=6 C=1 D=3 04,69,c2,00,00</instruction>
+    <instruction id="9" tag="WRITE_MEM">A=9 B=6 C=0 D=4 04,69,00,01,00</instruction>
+    <instruction id="10" tag="ADD">A=0 B=0 C=0 04,00,00,00,00</instruction>
+    <instruction id="11" tag="ADD">A=0 B=1 C=1 04,10,00,80,00</instruction>
+    <instruction id="12" tag="ADD">A=0 B=2 C=2 04,20,00,00,01</instruction>
+    <instruction id="13" tag="ADD">A=0 B=3 C=3 04,30,00,80,01</instruction>
+    <instruction id="14" tag="ADD">A=0 B=4 C=4 04,40,00,00,02</instruction>
+</log>
